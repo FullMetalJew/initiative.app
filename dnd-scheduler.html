@@ -1,0 +1,1053 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>initiative.app</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@500;700;900&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@500;700&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/luxon/3.4.4/luxon.min.js"></script>
+<style>
+  :root{
+    --bg-void:#12141c;
+    --bg-card:#1b1f2d;
+    --bg-card-raised:#232838;
+    --line:#333a52;
+    --parchment:#e9dfc7;
+    --ember:#e0913f;
+    --ember-dim:#8a5a2b;
+    --arcane:#4fae8c;
+    --arcane-dim:#2c5f4d;
+    --text-primary:#ece7da;
+    --text-muted:#8b8fa3;
+    --danger:#b5555a;
+    --maybe:#c9a24a;
+  }
+  *{box-sizing:border-box;}
+  body{
+    margin:0;
+    background:
+      radial-gradient(ellipse at 20% -10%, rgba(224,145,63,0.10), transparent 45%),
+      radial-gradient(ellipse at 90% 10%, rgba(79,174,140,0.08), transparent 40%),
+      var(--bg-void);
+    color:var(--text-primary);
+    font-family:'Inter',sans-serif;
+    min-height:100vh;
+    padding:0 20px 80px;
+  }
+  .wrap{max-width:680px;margin:0 auto;}
+  header.hero{
+    padding:56px 0 32px;
+    text-align:center;
+    position:relative;
+  }
+  .torch{
+    font-size:28px;
+    display:inline-block;
+    margin-bottom:14px;
+    filter:drop-shadow(0 0 12px rgba(224,145,63,0.6));
+    animation:flicker 3s ease-in-out infinite;
+  }
+  @keyframes flicker{
+    0%,100%{opacity:1;transform:translateY(0);}
+    45%{opacity:0.85;transform:translateY(-1px);}
+    55%{opacity:0.95;}
+  }
+  h1{
+    font-family:'Cinzel',serif;
+    font-weight:900;
+    font-size:clamp(30px,5.5vw,44px);
+    letter-spacing:0.5px;
+    margin:0 0 10px;
+    background:linear-gradient(180deg,#f6ecd6,#cbb87f);
+    -webkit-background-clip:text;
+    background-clip:text;
+    color:transparent;
+  }
+  .subtitle{color:var(--text-muted);font-size:15px;max-width:420px;margin:0 auto;line-height:1.5;}
+  .domain{
+    color:var(--text-muted);
+    -webkit-text-fill-color:var(--text-muted);
+    font-weight:500;
+    font-size:0.6em;
+    letter-spacing:0;
+  }
+
+  .card{
+    background:var(--bg-card);
+    border:1px solid var(--line);
+    border-radius:14px;
+    padding:28px;
+    margin-bottom:20px;
+    box-shadow:0 20px 40px -20px rgba(0,0,0,0.6);
+  }
+  .eyebrow{
+    font-family:'JetBrains Mono',monospace;
+    font-size:11px;
+    letter-spacing:0.14em;
+    text-transform:uppercase;
+    color:var(--ember);
+    margin-bottom:8px;
+    display:flex;
+    align-items:center;
+    gap:8px;
+  }
+  .eyebrow::before{content:"◆";font-size:9px;}
+  h2{font-family:'Cinzel',serif;font-size:22px;margin:0 0 18px;color:var(--parchment);}
+
+  .choice-row{display:flex;gap:14px;margin-bottom:16px;}
+  .choice-btn{
+    flex:1;
+    background:var(--bg-card-raised);
+    border:1px solid var(--line);
+    border-radius:10px;
+    padding:18px;
+    text-align:left;
+    cursor:pointer;
+    color:var(--text-primary);
+    font-family:'Inter',sans-serif;
+    transition:border-color .15s, transform .1s;
+  }
+  .choice-btn:hover{border-color:var(--ember);transform:translateY(-1px);}
+  .choice-btn strong{display:block;font-size:15px;margin-bottom:4px;}
+  .choice-btn span{font-size:13px;color:var(--text-muted);}
+
+  label{display:block;font-size:13px;color:var(--text-muted);margin-bottom:6px;margin-top:16px;}
+  label:first-child{margin-top:0;}
+  input[type=text],input[type=date],input[type=time]{
+    width:100%;
+    background:var(--bg-void);
+    border:1px solid var(--line);
+    border-radius:8px;
+    padding:11px 13px;
+    color:var(--text-primary);
+    font-family:'Inter',sans-serif;
+    font-size:14px;
+  }
+  input:focus{outline:2px solid var(--ember);outline-offset:1px;}
+  input[type=date],input[type=time]{color-scheme:dark;}
+
+  select{
+    width:100%;
+    background-color:var(--bg-void);
+    background-image:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='14' height='14' viewBox='0 0 24 24' fill='none' stroke='%238b8fa3' stroke-width='2.5' stroke-linecap='round' stroke-linejoin='round'><polyline points='6 9 12 15 18 9'></polyline></svg>");
+    background-repeat:no-repeat;
+    background-position:right 14px center;
+    border:1px solid var(--line);
+    border-radius:8px;
+    padding:11px 38px 11px 13px;
+    color:var(--text-primary);
+    font-family:'Inter',sans-serif;
+    font-size:14px;
+    appearance:none;
+    -webkit-appearance:none;
+    -moz-appearance:none;
+    color-scheme:dark;
+    cursor:pointer;
+  }
+  select:hover{border-color:var(--ember-dim);}
+  select:focus{outline:2px solid var(--ember);outline-offset:1px;}
+  select option{
+    background:var(--bg-card-raised);
+    color:var(--text-primary);
+  }
+
+  .date-row{
+    display:grid;
+    grid-template-columns:1fr 1fr auto;
+    gap:10px;
+    align-items:end;
+    margin-bottom:10px;
+  }
+  .icon-btn{
+    background:transparent;
+    border:1px solid var(--line);
+    color:var(--danger);
+    border-radius:8px;
+    width:42px;height:42px;
+    cursor:pointer;
+    font-size:16px;
+  }
+  .icon-btn:hover{border-color:var(--danger);}
+
+  .btn{
+    font-family:'Cinzel',serif;
+    font-weight:700;
+    font-size:14px;
+    letter-spacing:0.03em;
+    border:none;
+    border-radius:9px;
+    padding:13px 22px;
+    cursor:pointer;
+    transition:transform .1s, box-shadow .15s;
+  }
+  .btn-primary{
+    background:linear-gradient(180deg,#f0a355,var(--ember));
+    color:#241505;
+    box-shadow:0 8px 20px -8px rgba(224,145,63,0.6);
+  }
+  .btn-primary:hover{transform:translateY(-1px);}
+  .btn-ghost{
+    background:transparent;
+    border:1px solid var(--line);
+    color:var(--text-primary);
+    font-family:'Inter',sans-serif;
+    font-weight:600;
+  }
+  .btn-ghost:hover{border-color:var(--arcane);color:var(--arcane);}
+  .btn-add{
+    background:transparent;
+    border:1px dashed var(--line);
+    color:var(--text-muted);
+    font-family:'Inter',sans-serif;
+    width:100%;
+    padding:11px;
+    margin-top:4px;
+  }
+  .btn-add:hover{border-color:var(--ember);color:var(--ember);}
+  .row-end{display:flex;gap:12px;margin-top:22px;}
+
+  .code-display{
+    font-family:'JetBrains Mono',monospace;
+    font-size:34px;
+    font-weight:700;
+    letter-spacing:0.12em;
+    color:var(--ember);
+    text-align:center;
+    padding:18px 0;
+    border:1px dashed var(--ember-dim);
+    border-radius:10px;
+    margin:16px 0;
+    cursor:pointer;
+  }
+  .code-hint{text-align:center;font-size:12px;color:var(--text-muted);margin-top:-8px;margin-bottom:16px;}
+
+  .vote-date{
+    border:1px solid var(--line);
+    border-radius:10px;
+    padding:16px;
+    margin-bottom:12px;
+    background:var(--bg-card-raised);
+  }
+  .vote-date-label{font-weight:600;font-size:15px;margin-bottom:12px;}
+  .vote-options{display:flex;gap:8px;}
+  .vote-opt{
+    flex:1;
+    padding:9px;
+    border-radius:7px;
+    border:1px solid var(--line);
+    background:transparent;
+    color:var(--text-muted);
+    font-size:13px;
+    font-weight:600;
+    cursor:pointer;
+    text-align:center;
+  }
+  .vote-opt.yes.active{background:rgba(79,174,140,0.18);border-color:var(--arcane);color:var(--arcane);}
+  .vote-opt.maybe.active{background:rgba(201,162,74,0.16);border-color:var(--maybe);color:var(--maybe);}
+  .vote-opt.no.active{background:rgba(181,85,90,0.16);border-color:var(--danger);color:var(--danger);}
+
+  .result-row{margin-bottom:16px;}
+  .result-top{
+    display:flex;
+    justify-content:space-between;
+    align-items:baseline;
+    margin-bottom:6px;
+    font-size:14px;
+  }
+  .result-top .count{font-family:'JetBrains Mono',monospace;color:var(--text-muted);font-size:12px;}
+  .bar-track{
+    height:10px;
+    background:var(--bg-void);
+    border-radius:6px;
+    overflow:hidden;
+    display:flex;
+  }
+  .bar-yes{background:var(--arcane);height:100%;}
+  .bar-maybe{background:var(--maybe);height:100%;}
+  .winner-badge{
+    display:inline-block;
+    font-family:'JetBrains Mono',monospace;
+    font-size:10px;
+    letter-spacing:0.08em;
+    text-transform:uppercase;
+    background:rgba(224,145,63,0.16);
+    color:var(--ember);
+    border:1px solid var(--ember-dim);
+    padding:2px 8px;
+    border-radius:5px;
+    margin-left:8px;
+  }
+
+  .d20{
+    width:64px;height:64px;
+    margin:0 auto 16px;
+    display:block;
+  }
+  .d20.rolling{animation:rollspin 1.1s cubic-bezier(.2,.9,.3,1);}
+  @keyframes rollspin{
+    0%{transform:rotate(0deg) scale(1);}
+    60%{transform:rotate(540deg) scale(1.08);}
+    100%{transform:rotate(720deg) scale(1);}
+  }
+
+  .respondents{font-size:12px;color:var(--text-muted);margin-top:6px;}
+  .back-link{
+    display:inline-block;
+    margin-bottom:18px;
+    color:var(--text-muted);
+    font-size:13px;
+    cursor:pointer;
+    text-decoration:none;
+  }
+  .back-link:hover{color:var(--ember);}
+  .empty{
+    text-align:center;
+    color:var(--text-muted);
+    font-size:14px;
+    padding:20px 0;
+  }
+  .notice{
+    font-size:12px;
+    color:var(--text-muted);
+    text-align:center;
+    margin-top:24px;
+    line-height:1.6;
+  }
+  .error{color:var(--danger);font-size:13px;margin-top:10px;}
+  .toast{
+    position:fixed;
+    bottom:24px;left:50%;
+    transform:translateX(-50%);
+    background:var(--bg-card-raised);
+    border:1px solid var(--arcane);
+    color:var(--text-primary);
+    padding:10px 18px;
+    border-radius:8px;
+    font-size:13px;
+    opacity:0;
+    pointer-events:none;
+    transition:opacity .2s;
+  }
+  .toast.show{opacity:1;}
+
+  .session-list{display:flex;flex-direction:column;gap:10px;margin-bottom:6px;}
+  .session-card{
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    gap:12px;
+    background:var(--bg-card-raised);
+    border:1px solid var(--line);
+    border-radius:10px;
+    padding:16px;
+  }
+  .session-card-main{flex:1;cursor:pointer;}
+  .session-card-main:focus-visible{outline:2px solid var(--ember);outline-offset:2px;border-radius:6px;}
+  .session-title{font-family:'Cinzel',serif;font-size:16px;color:var(--parchment);margin-top:2px;}
+  .session-meta{font-size:13px;color:var(--text-muted);margin-top:4px;}
+  .delete-session{flex-shrink:0;}
+
+  .modal-overlay{
+    position:fixed;
+    inset:0;
+    background:rgba(8,9,14,0.72);
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    padding:20px;
+    z-index:100;
+  }
+  .modal-card{
+    background:var(--bg-card);
+    border:1px solid var(--line);
+    border-radius:14px;
+    padding:26px;
+    width:100%;
+    max-width:380px;
+    box-shadow:0 30px 60px -20px rgba(0,0,0,0.7);
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header class="hero">
+    <span class="torch">🎲</span>
+    <h1>initiative<span class="domain">.app</span></h1>
+    <p class="subtitle">Roll initiative for your next session. Propose a few nights, let the party mark when they can make it, and the table decides itself.</p>
+  </header>
+
+  <div id="app"></div>
+
+  <p class="notice">Poll data is shared with anyone who opens this page — perfect for your table.</p>
+</div>
+
+<div id="modal-root"></div>
+<div class="toast" id="toast"></div>
+
+<script>
+const app = document.getElementById('app');
+const toastEl = document.getElementById('toast');
+function toast(msg){
+  toastEl.textContent = msg;
+  toastEl.classList.add('show');
+  setTimeout(()=>toastEl.classList.remove('show'), 1800);
+}
+
+// SHA-256 hash of the delete/seed password — the plaintext itself is never stored in this file.
+const DELETE_PASSWORD_HASH = 'a7e1a5f4cea33fcf13959b65ae13ea07347a022f97985f358ff8a8ae84fd7ea8';
+
+async function sha256Hex(text){
+  if(!(window.crypto && window.crypto.subtle)){
+    throw new Error('crypto-unavailable');
+  }
+  const bytes = new TextEncoder().encode(text);
+  const digest = await crypto.subtle.digest('SHA-256', bytes);
+  return Array.from(new Uint8Array(digest)).map(b => b.toString(16).padStart(2,'0')).join('');
+}
+
+// A lightweight (non-cryptographic) hash used only to disambiguate similar-looking
+// voter names so two different "Sam"s typed slightly differently don't collide
+// on the same storage key. Same normalized name always maps to the same key,
+// so re-submitting under your own name still edits your existing vote.
+function fnv1aHash(str){
+  let hash = 0x811c9dc5;
+  for(let i=0;i<str.length;i++){
+    hash ^= str.charCodeAt(i);
+    hash = (hash * 0x01000193) >>> 0;
+  }
+  return hash.toString(36);
+}
+
+function pollKey(id){ return `dnd-poll:session:${id}`; }
+function voteKeyPrefix(id){ return `dnd-poll:session:${id}:vote:`; }
+function slugify(str){
+  const s = (str||'').toLowerCase().trim().replace(/[^a-z0-9]+/g,'-').replace(/^-+|-+$/g,'');
+  return s.slice(0,60) || 'voter';
+}
+function normalizeName(name){ return (name||'').trim().toLowerCase().replace(/\s+/g,' '); }
+function voteKey(id,name){
+  const norm = normalizeName(name);
+  return `${voteKeyPrefix(id)}${slugify(name)}-${fnv1aHash(norm)}`;
+}
+function suggKeyPrefix(id){ return `dnd-poll:session:${id}:suggestion:`; }
+const POLL_LIST_PREFIX = 'dnd-poll:session:';
+
+function genId(){
+  return Date.now().toString(36) + Math.random().toString(36).slice(2,6);
+}
+
+function dateKey(d){
+  return `${d.date}|${d.time||''}`;
+}
+
+async function loadSuggestions(pollId){
+  try{
+    const list = await window.storage.list(suggKeyPrefix(pollId), true);
+    if(!list || !list.keys || !list.keys.length) return [];
+    const results = await Promise.all(list.keys.map(k => window.storage.get(k, true).catch(()=>null)));
+    return results.filter(Boolean).map(r => JSON.parse(r.value));
+  }catch(err){
+    return [];
+  }
+}
+
+function combinedDates(poll, suggestions){
+  const list = poll.dates.map(d => ({ date:d.date, time:d.time, tz:poll.timezone, suggested:false }));
+  const seen = new Set(list.map(dateKey));
+  suggestions.forEach(s=>{
+    const k = dateKey(s);
+    if(!seen.has(k)){
+      seen.add(k);
+      list.push({ date:s.date, time:s.time, tz:s.tz || poll.timezone, suggested:true, suggestedBy:s.suggestedBy });
+    }
+  });
+  return list.sort((a,b) => (a.date+((a.time)||'99:99')).localeCompare(b.date+((b.time)||'99:99')));
+}
+
+const TEST_VOTER_NAMES = [
+  'Frodo Baggins','Sam Gamgee','Bilbo Baggins','Gandalf the Grey',
+  'Aria Nightwind','Thorne Blackwood','Kessia Stormrider','Bram Oakhelm',
+  'Lyra Duskwalker','Finnian Ashcroft'
+];
+
+function pickRandom(arr, n){
+  const pool = [...arr];
+  const picked = [];
+  while(picked.length < n && pool.length){
+    const i = Math.floor(Math.random()*pool.length);
+    picked.push(pool.splice(i,1)[0]);
+  }
+  return picked;
+}
+
+function randomVoteValue(){
+  const r = Math.random();
+  if(r < 0.55) return 'yes';
+  if(r < 0.8) return 'maybe';
+  return 'no';
+}
+
+async function seedTestVotes(pollId, dates, existingNames){
+  const available = TEST_VOTER_NAMES.filter(n => !existingNames.includes(n));
+  const names = pickRandom(available.length ? available : TEST_VOTER_NAMES, Math.min(4, available.length) || 3);
+  await Promise.all(names.map(name => {
+    const votes = {};
+    dates.forEach(d => { votes[dateKey(d)] = randomVoteValue(); });
+    const payload = { name, votes, submitted: Date.now() };
+    return window.storage.set(voteKey(pollId, name), JSON.stringify(payload), true).catch(()=>null);
+  }));
+  toast('Added test votes');
+}
+
+
+function fmtDate(dateStr, timeStr, tz){
+  if(!timeStr){
+    const dt = luxon.DateTime.fromISO(dateStr);
+    return dt.isValid ? dt.toLocaleString({weekday:'short', month:'short', day:'numeric'}) : dateStr;
+  }
+  const dt = luxon.DateTime.fromISO(`${dateStr}T${timeStr}`, { zone: tz || 'local' });
+  if(!dt.isValid) return `${dateStr} ${timeStr}`;
+  const local = dt.toLocal();
+  const label = local.toLocaleString({weekday:'short', month:'short', day:'numeric', hour:'numeric', minute:'2-digit'});
+  const abbr = local.offsetNameShort || '';
+  return `${label} ${abbr}`.trim();
+}
+
+function detectTimezone(){
+  try{ return Intl.DateTimeFormat().resolvedOptions().timeZone || 'UTC'; }
+  catch(e){ return 'UTC'; }
+}
+
+function timezoneOptions(selected){
+  let zones;
+  try{ zones = Intl.supportedValuesOf('timeZone'); }
+  catch(e){ zones = [selected]; }
+  if(!zones.includes(selected)) zones = [selected, ...zones];
+  return zones.map(z => `<option value="${z}" ${z===selected?'selected':''}>${z.replace(/_/g,' ')}</option>`).join('');
+}
+
+let state = { view:'loading' };
+const modalRoot = document.getElementById('modal-root');
+
+async function render(){
+  if(state.view === 'loading') await renderLoading();
+  if(state.view === 'list') await renderList();
+  else if(state.view === 'create') renderCreate();
+  else if(state.view === 'vote') await renderVote();
+  else if(state.view === 'results') await renderResults();
+  renderModal();
+}
+
+async function renderLoading(){
+  app.innerHTML = `<div class="card"><div class="empty">Opening the campaign log…</div></div>`;
+  state = { view:'list' };
+}
+
+function pollListOnlyKeys(keys){
+  // A session record key has no further ':' after the id — vote/suggestion sub-keys do.
+  return keys.filter(k => k.slice(POLL_LIST_PREFIX.length).indexOf(':') === -1);
+}
+
+async function renderList(){
+  app.innerHTML = `<div class="card"><div class="empty">Gathering your sessions…</div></div>`;
+
+  let sessions = [];
+  try{
+    const list = await window.storage.list(POLL_LIST_PREFIX, true);
+    if(list && list.keys && list.keys.length){
+      const ids = pollListOnlyKeys(list.keys).map(k => k.slice(POLL_LIST_PREFIX.length));
+      const results = await Promise.all(ids.map(id => window.storage.get(pollKey(id), true).catch(()=>null)));
+      sessions = results
+        .map((r,idx) => r ? { id: ids[idx], ...JSON.parse(r.value) } : null)
+        .filter(Boolean)
+        .sort((a,b) => (b.created||0) - (a.created||0));
+    }
+  }catch(err){
+    // no sessions yet
+  }
+
+  const cards = sessions.map(s => {
+    const soonest = combinedDates(s, [])[0];
+    const dateSummary = soonest ? fmtDate(soonest.date, soonest.time, soonest.tz) : 'No dates yet';
+    const countLabel = s.dates.length === 1 ? '1 date proposed' : `${s.dates.length} dates proposed`;
+    return `
+    <div class="session-card" data-id="${s.id}">
+      <div class="session-card-main" data-id="${s.id}" role="button" tabindex="0" aria-label="Open ${escapeHtml(s.title)}">
+        <div class="eyebrow" style="margin-bottom:6px;">DM ${escapeHtml(s.dm)}</div>
+        <div class="session-title">${escapeHtml(s.title)}</div>
+        <div class="session-meta">${escapeHtml(dateSummary)} · ${countLabel}</div>
+      </div>
+      <button class="icon-btn delete-session" data-id="${s.id}" data-title="${escapeHtml(s.title)}" title="Delete session" aria-label="Delete session: ${escapeHtml(s.title)}">🗑</button>
+    </div>`;
+  }).join('');
+
+  app.innerHTML = `
+    <div class="card">
+      <div class="eyebrow">Your table's sessions</div>
+      <h2>Upcoming games</h2>
+      ${sessions.length ? `<div class="session-list">${cards}</div>` : `<div class="empty">No sessions yet. Propose the first one below.</div>`}
+      <div class="row-end">
+        <button class="btn btn-primary" id="new-session">+ New session</button>
+      </div>
+    </div>
+  `;
+
+  document.getElementById('new-session').onclick = () => {
+    state = { view:'create', dates:[{date:'',time:''}], returnTo:{view:'list'} };
+    render();
+  };
+  document.querySelectorAll('.session-card-main').forEach(el=>{
+    const open = () => {
+      const s = sessions.find(x => x.id === el.dataset.id);
+      state = { view:'vote', pollId: s.id, poll: s, votes:{} };
+      render();
+    };
+    el.onclick = open;
+    el.onkeydown = (e) => { if(e.key === 'Enter' || e.key === ' '){ e.preventDefault(); open(); } };
+  });
+  document.querySelectorAll('.delete-session').forEach(el=>{
+    el.onclick = (e) => {
+      e.stopPropagation();
+      state.modal = { type:'delete', pollId: el.dataset.id, title: el.dataset.title, password:'', error:null };
+      renderModal();
+    };
+  });
+}
+
+function renderModal(){
+  if(!state.modal){ modalRoot.innerHTML = ''; return; }
+  const m = state.modal;
+  const isDelete = m.type === 'delete';
+  const heading = isDelete ? `Delete "${escapeHtml(m.title)}"?` : 'Add simulated test votes?';
+  const body = isDelete
+    ? 'This removes the session and every vote or suggested date attached to it. Enter the password to continue.'
+    : 'This adds a few fake voters with randomized answers, for testing. Enter the password to continue.';
+  const confirmLabel = isDelete ? 'Delete session' : 'Add test votes';
+  const confirmStyle = isDelete ? 'style="background:linear-gradient(180deg,#c96a6f,var(--danger));box-shadow:0 8px 20px -8px rgba(181,85,90,0.6);"' : '';
+
+  modalRoot.innerHTML = `
+    <div class="modal-overlay" id="modal-overlay">
+      <div class="modal-card">
+        <div class="eyebrow">${isDelete ? 'Confirm deletion' : 'Confirm test data'}</div>
+        <h2 style="font-size:19px;">${heading}</h2>
+        <p style="color:var(--text-muted);font-size:13px;margin:-8px 0 16px;">${body}</p>
+        <label>Password</label>
+        <input type="password" id="modal-password" autocomplete="off">
+        <div class="error" id="modal-error">${m.error||''}</div>
+        <div class="row-end">
+          <button class="btn btn-primary" id="modal-confirm" ${confirmStyle}>${confirmLabel}</button>
+          <button class="btn btn-ghost" id="modal-cancel">Cancel</button>
+        </div>
+      </div>
+    </div>
+  `;
+  const pwInput = document.getElementById('modal-password');
+  pwInput.value = m.password || '';
+  pwInput.focus();
+  pwInput.oninput = () => { state.modal.password = pwInput.value; };
+  pwInput.onkeydown = (e) => { if(e.key === 'Enter') confirmAction(); };
+  document.getElementById('modal-cancel').onclick = () => { state.modal = null; renderModal(); };
+  document.getElementById('modal-overlay').onclick = (e) => { if(e.target.id === 'modal-overlay'){ state.modal = null; renderModal(); } };
+  document.getElementById('modal-confirm').onclick = confirmAction;
+
+  async function confirmAction(){
+    const errEl = document.getElementById('modal-error');
+    errEl.textContent = '';
+    let enteredHash;
+    try{
+      enteredHash = await sha256Hex(state.modal.password || '');
+    }catch(err){
+      errEl.textContent = "This browser can't verify the password here (it needs a secure context). Try opening this page through the Claude app or over HTTPS.";
+      return;
+    }
+    if(enteredHash !== DELETE_PASSWORD_HASH){
+      errEl.textContent = 'That password is incorrect.';
+      return;
+    }
+    if(isDelete) await confirmDelete(errEl);
+    else await confirmSeed(errEl);
+  }
+
+  async function confirmDelete(errEl){
+    const pollId = state.modal.pollId;
+    try{
+      await window.storage.delete(pollKey(pollId), true).catch(()=>null);
+      const votes = await window.storage.list(voteKeyPrefix(pollId), true).catch(()=>null);
+      if(votes && votes.keys) await Promise.all(votes.keys.map(k => window.storage.delete(k, true).catch(()=>null)));
+      const suggs = await window.storage.list(suggKeyPrefix(pollId), true).catch(()=>null);
+      if(suggs && suggs.keys) await Promise.all(suggs.keys.map(k => window.storage.delete(k, true).catch(()=>null)));
+      state.modal = null;
+      toast('Session deleted');
+      if(state.view === 'results' && state.pollId === pollId){
+        state = { view:'list' };
+      }
+      render();
+    }catch(err){
+      errEl.textContent = 'Could not delete the session. Try again.';
+    }
+  }
+
+  async function confirmSeed(errEl){
+    try{
+      await seedTestVotes(m.pollId, m.dates, m.existingNames);
+      state.modal = null;
+      render();
+    }catch(err){
+      errEl.textContent = 'Could not add test votes. Try again.';
+    }
+  }
+}
+
+function renderCreate(){
+  const rows = state.dates.map((d,i) => `
+    <div class="date-row" data-idx="${i}">
+      <div>
+        ${i===0?'<label>Date</label>':''}
+        <input type="date" class="date-input" value="${d.date}">
+      </div>
+      <div>
+        ${i===0?'<label>Time (optional)</label>':''}
+        <input type="time" class="time-input" value="${d.time}">
+      </div>
+      <button class="icon-btn remove-row" title="Remove" ${state.dates.length===1?'style="visibility:hidden"':''}>✕</button>
+    </div>
+  `).join('');
+
+  app.innerHTML = `
+    <a class="back-link" id="back">&larr; Back to sessions</a>
+    <div class="card">
+      <div class="eyebrow">New session</div>
+      <h2>Propose your session</h2>
+      <label>Session title</label>
+      <input type="text" id="title" maxlength="80" placeholder="e.g. Curse of Strahd, Session 12" value="${state.title||''}">
+      <label>Your name (as DM)</label>
+      <input type="text" id="dmname" maxlength="60" placeholder="e.g. Sam" value="${state.dm||''}">
+      <label style="margin-top:20px">Candidate dates</label>
+      <div id="date-rows">${rows}</div>
+      <button class="btn-add" id="add-date">+ Add another date</button>
+      <label>Timezone for the times above</label>
+      <select id="tz-select">${timezoneOptions(state.timezone || detectTimezone())}</select>
+      <p class="code-hint" style="margin-top:8px">Everyone will see times converted to their own device's timezone automatically.</p>
+      <div class="row-end">
+        <button class="btn btn-primary" id="submit-create">Create session</button>
+      </div>
+      <div class="error" id="create-error"></div>
+    </div>
+  `;
+
+  document.getElementById('back').onclick = () => { state = state.returnTo ? {...state.returnTo} : {view:'list'}; render(); };
+  document.getElementById('add-date').onclick = () => {
+    syncDatesFromDOM();
+    state.dates.push({date:'',time:''});
+    render();
+  };
+  document.querySelectorAll('.remove-row').forEach(btn=>{
+    btn.onclick = (e)=>{
+      syncDatesFromDOM();
+      const idx = parseInt(e.target.closest('.date-row').dataset.idx);
+      state.dates.splice(idx,1);
+      render();
+    };
+  });
+  document.getElementById('submit-create').onclick = createPoll;
+
+  function syncDatesFromDOM(){
+    state.title = document.getElementById('title').value;
+    state.dm = document.getElementById('dmname').value;
+    state.timezone = document.getElementById('tz-select').value;
+    const rows = document.querySelectorAll('.date-row');
+    state.dates = Array.from(rows).map(r=>({
+      date: r.querySelector('.date-input').value,
+      time: r.querySelector('.time-input').value
+    }));
+  }
+
+  async function createPoll(){
+    syncDatesFromDOM();
+    const title = state.title?.trim();
+    const dm = state.dm?.trim();
+    const validDates = state.dates.filter(d=>d.date);
+    const errEl = document.getElementById('create-error');
+
+    if(!title){ errEl.textContent = 'Give the session a title.'; return; }
+    if(!dm){ errEl.textContent = 'Enter your name.'; return; }
+    if(validDates.length < 1){ errEl.textContent = 'Add at least one candidate date.'; return; }
+
+    const id = genId();
+    const poll = { title, dm, timezone: state.timezone || detectTimezone(), dates: validDates, created: Date.now() };
+    try{
+      const res = await window.storage.set(pollKey(id), JSON.stringify(poll), true);
+      if(!res){ errEl.textContent = 'Could not save the session. Try again.'; return; }
+      state = { view:'vote', pollId: id, poll, votes:{} };
+      render();
+      toast('Session created');
+    }catch(err){
+      errEl.textContent = 'Could not save the session. Try again.';
+    }
+  }
+}
+
+async function renderVote(){
+  app.innerHTML = `<div class="card"><div class="empty">Fetching the latest dates…</div></div>`;
+  const suggestions = await loadSuggestions(state.pollId);
+  const dates = combinedDates(state.poll, suggestions);
+  state.voteDates = dates;
+
+  // If we already know this person's name (e.g. they just submitted, or are
+  // revisiting), try to load their previous answers so re-editing doesn't
+  // mean starting from a blank form.
+  if(state.voterName && Object.keys(state.votes).length === 0){
+    await tryPrefillVote(state.voterName);
+  }
+
+  const dateRows = dates.map((d) => {
+    const key = dateKey(d);
+    const current = state.votes[key] || null;
+    return `
+    <div class="vote-date">
+      <div class="vote-date-label">${fmtDate(d.date, d.time, d.tz)} ${d.suggested ? `<span class="winner-badge" style="background:rgba(79,174,140,0.16);color:var(--arcane);border-color:var(--arcane-dim);">Suggested by ${escapeHtml(d.suggestedBy)}</span>`:''}</div>
+      <div class="vote-options" data-key="${escapeHtml(key)}">
+        <button class="vote-opt yes ${current==='yes'?'active':''}" data-val="yes">Can make it</button>
+        <button class="vote-opt maybe ${current==='maybe'?'active':''}" data-val="maybe">Maybe</button>
+        <button class="vote-opt no ${current==='no'?'active':''}" data-val="no">Can't</button>
+      </div>
+    </div>`;
+  }).join('');
+
+  app.innerHTML = `
+    <a class="back-link" id="back">&larr; Back to results</a>
+    <div class="card">
+      <div class="eyebrow">DM ${escapeHtml(state.poll.dm)}</div>
+      <h2>${escapeHtml(state.poll.title)}</h2>
+      <label>Your name</label>
+      <input type="text" id="voter-name" maxlength="60" placeholder="e.g. Priya" value="${state.voterName||''}">
+      <p class="code-hint" style="text-align:left;margin-top:14px">Times below are shown in your device's local timezone.</p>
+      <div style="margin-top:6px">${dateRows}</div>
+      <div class="row-end">
+        <button class="btn btn-primary" id="submit-vote">Submit availability</button>
+        <button class="btn btn-ghost" id="view-results">View results</button>
+      </div>
+      <div class="error" id="vote-error"></div>
+    </div>
+
+    <div class="card">
+      <div class="eyebrow">Not seeing a night that works?</div>
+      <h2 style="font-size:18px;margin-bottom:14px;">Suggest a time</h2>
+      <div class="date-row" style="grid-template-columns:1fr 1fr;">
+        <div>
+          <label>Date</label>
+          <input type="date" id="sugg-date">
+        </div>
+        <div>
+          <label>Time (optional)</label>
+          <input type="time" id="sugg-time">
+        </div>
+      </div>
+      <label>Timezone</label>
+      <select id="sugg-tz">${timezoneOptions(detectTimezone())}</select>
+      <div class="row-end">
+        <button class="btn btn-ghost" id="submit-suggestion">Add this option</button>
+      </div>
+      <div class="error" id="suggest-error"></div>
+    </div>
+  `;
+
+  document.getElementById('back').onclick = () => { state.view = 'results'; render(); };
+  document.getElementById('view-results').onclick = () => { state.view = 'results'; render(); };
+
+  const nameInput = document.getElementById('voter-name');
+  nameInput.oninput = () => { state.voterName = nameInput.value; };
+  nameInput.onblur = async () => {
+    const name = nameInput.value.trim();
+    if(!name) return;
+    const found = await tryPrefillVote(name);
+    if(found) render();
+  };
+
+  async function tryPrefillVote(name){
+    try{
+      const res = await window.storage.get(voteKey(state.pollId, name), true);
+      if(!res) return false;
+      // Guard against a race: if the person already started marking answers
+      // (e.g. clicked a vote option while this lookup was in flight), don't
+      // clobber their fresh selections with the older stored ones.
+      if(Object.keys(state.votes).length > 0) return false;
+      const payload = JSON.parse(res.value);
+      state.votes = { ...payload.votes };
+      return true;
+    }catch(err){
+      return false;
+    }
+  }
+
+  document.querySelectorAll('.vote-options').forEach(group=>{
+    group.querySelectorAll('.vote-opt').forEach(btn=>{
+      btn.onclick = () => {
+        const key = group.dataset.key;
+        state.votes[key] = btn.dataset.val;
+        group.querySelectorAll('.vote-opt').forEach(b=>{
+          b.classList.toggle('active', b.dataset.val === btn.dataset.val);
+        });
+      };
+    });
+  });
+
+  document.getElementById('submit-vote').onclick = submitVote;
+  document.getElementById('submit-suggestion').onclick = submitSuggestion;
+
+  async function submitVote(){
+    const name = document.getElementById('voter-name').value.trim();
+    const errEl = document.getElementById('vote-error');
+    if(!name){ errEl.textContent = 'Enter your name so the party knows who voted.'; return; }
+    const answered = Object.keys(state.votes).length;
+    if(answered < state.voteDates.length){ errEl.textContent = 'Mark availability for every date.'; return; }
+
+    const payload = { name, votes: state.votes, submitted: Date.now() };
+    try{
+      const res = await window.storage.set(voteKey(state.pollId, name), JSON.stringify(payload), true);
+      if(!res){ errEl.textContent = 'Could not save your vote. Try again.'; return; }
+      state.voterName = name;
+      state.view = 'results';
+      render();
+      toast('Availability saved');
+    }catch(err){
+      errEl.textContent = 'Could not save your vote. Try again.';
+    }
+  }
+
+  async function submitSuggestion(){
+    const errEl = document.getElementById('suggest-error');
+    const name = document.getElementById('voter-name').value.trim();
+    const date = document.getElementById('sugg-date').value;
+    const time = document.getElementById('sugg-time').value;
+    const tz = document.getElementById('sugg-tz').value;
+
+    if(!name){ errEl.textContent = 'Enter your name above first.'; return; }
+    if(!date){ errEl.textContent = 'Pick a date to suggest.'; return; }
+
+    // Re-check against the freshest data right before writing, to shrink (not
+    // eliminate — there's no server to make this atomic) the window where two
+    // people suggest the same slot at nearly the same moment.
+    const freshSuggestions = await loadSuggestions(state.pollId);
+    const freshDates = combinedDates(state.poll, freshSuggestions);
+    const already = freshDates.some(d => dateKey(d) === dateKey({date,time}));
+    if(already){ errEl.textContent = 'That date and time is already an option.'; return; }
+
+    const suggestion = { date, time, tz, suggestedBy: name, created: Date.now() };
+    const suggKey = `${suggKeyPrefix(state.pollId)}${Date.now()}_${Math.random().toString(36).slice(2,7)}`;
+    try{
+      const res = await window.storage.set(suggKey, JSON.stringify(suggestion), true);
+      if(!res){ errEl.textContent = 'Could not add that option. Try again.'; return; }
+      state.voterName = name;
+      toast('Option added');
+      render();
+    }catch(err){
+      errEl.textContent = 'Could not add that option. Try again.';
+    }
+  }
+}
+
+async function renderResults(){
+  app.innerHTML = `
+    <div class="card">
+      <div class="eyebrow">DM ${escapeHtml(state.poll.dm)}</div>
+      <h2>${escapeHtml(state.poll.title)}</h2>
+      <div class="empty">Rolling for the party's answer…</div>
+    </div>
+  `;
+
+  let votes = [];
+  try{
+    const list = await window.storage.list(voteKeyPrefix(state.pollId), true);
+    if(list && list.keys && list.keys.length){
+      const results = await Promise.all(list.keys.map(k => window.storage.get(k, true).catch(()=>null)));
+      votes = results.filter(Boolean).map(r => JSON.parse(r.value));
+    }
+  }catch(err){
+    // no votes yet
+  }
+
+  const suggestions = await loadSuggestions(state.pollId);
+  const dates = combinedDates(state.poll, suggestions);
+  const tally = dates.map((d)=>{
+    const key = dateKey(d);
+    let yes=0, maybe=0, no=0;
+    votes.forEach(v=>{
+      const val = v.votes[key];
+      if(val==='yes') yes++;
+      else if(val==='maybe') maybe++;
+      else if(val==='no') no++;
+    });
+    return { d, key, yes, maybe, no, score: yes*2 + maybe };
+  });
+
+  const maxScore = Math.max(1, ...tally.map(t=>t.score));
+  const bestScore = Math.max(...tally.map(t=>t.score));
+  const winnerCount = tally.filter(t => t.score === bestScore && bestScore > 0).length;
+  const winnerLabel = winnerCount > 1 ? 'Tied best fit' : 'Best fit';
+
+  const rows = tally
+    .slice()
+    .sort((a,b)=>b.score-a.score)
+    .map(t=>{
+      const isWinner = t.score === bestScore && votes.length > 0 && bestScore > 0;
+      const yesPct = (t.yes / maxScore) * 100 * (2);
+      const maybePct = (t.maybe / maxScore) * 100;
+      return `
+      <div class="result-row">
+        <div class="result-top">
+          <span>${fmtDate(t.d.date, t.d.time, t.d.tz)} ${isWinner?`<span class="winner-badge">${winnerLabel}</span>`:''} ${t.d.suggested?`<span class="winner-badge" style="background:rgba(79,174,140,0.16);color:var(--arcane);border-color:var(--arcane-dim);">Suggested</span>`:''}</span>
+          <span class="count">${t.yes} can · ${t.maybe} maybe · ${t.no} can't</span>
+        </div>
+        <div class="bar-track">
+          <div class="bar-yes" style="width:${Math.min(100,yesPct)}%"></div>
+          <div class="bar-maybe" style="width:${Math.min(100-Math.min(100,yesPct),maybePct)}%"></div>
+        </div>
+      </div>`;
+    }).join('');
+
+  const names = votes.map(v=>escapeHtml(v.name)).join(', ');
+
+  app.innerHTML = `
+    <a class="back-link" id="back-list">&larr; All sessions</a>
+    <div class="card">
+      <div class="eyebrow">DM ${escapeHtml(state.poll.dm)}</div>
+      <h2>${escapeHtml(state.poll.title)}</h2>
+      ${votes.length ? `
+        <svg class="d20 rolling" viewBox="0 0 100 100">
+          <polygon points="50,4 92,27 92,73 50,96 8,73 8,27" fill="none" stroke="#e0913f" stroke-width="2.5"/>
+          <polygon points="50,4 92,27 50,50" fill="rgba(224,145,63,0.12)" stroke="#e0913f" stroke-width="1"/>
+          <polygon points="92,27 92,73 50,50" fill="rgba(79,174,140,0.10)" stroke="#4fae8c" stroke-width="1"/>
+          <polygon points="50,96 8,73 50,50" fill="rgba(79,174,140,0.10)" stroke="#4fae8c" stroke-width="1"/>
+          <polygon points="8,73 8,27 50,50" fill="rgba(224,145,63,0.12)" stroke="#e0913f" stroke-width="1"/>
+        </svg>
+        ${rows}
+        <p class="respondents">Answered by: ${names}</p>
+      ` : `<div class="empty">No one has voted yet. Open this page from your table and mark your availability.</div>`}
+      <div class="row-end">
+        <button class="btn btn-primary" id="add-vote">Add my availability</button>
+        <button class="btn btn-ghost" id="refresh">Refresh</button>
+      </div>
+    </div>
+    <a class="back-link" id="seed-votes">Add simulated test votes</a>
+  `;
+  document.getElementById('back-list').onclick = () => { state = { view:'list' }; render(); };
+  document.getElementById('add-vote').onclick = () => { state.votes = state.votes || {}; state.view='vote'; render(); };
+  document.getElementById('refresh').onclick = () => { render(); };
+  document.getElementById('seed-votes').onclick = () => {
+    state.modal = { type:'seed', pollId: state.pollId, dates, existingNames: votes.map(v=>v.name), password:'', error:null };
+    renderModal();
+  };
+}
+
+function escapeHtml(str){
+  const div = document.createElement('div');
+  div.textContent = str || '';
+  return div.innerHTML;
+}
+
+render();
+</script>
+</body>
+</html>

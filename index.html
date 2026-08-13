@@ -7,6 +7,9 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@500;700;900&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@500;700&display=swap" rel="stylesheet">
 <script src="https://cdnjs.cloudflare.com/ajax/libs/luxon/3.4.4/luxon.min.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-auth-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-firestore-compat.js"></script>
 <style>
   :root{
     --bg-void:#12141c;
@@ -1047,7 +1050,98 @@ function escapeHtml(str){
   return div.innerHTML;
 }
 
-render();
+// ============================================================
+// BACKEND SETUP — required when hosting this file yourself
+// (e.g. on GitHub Pages). Inside a Claude.ai conversation this
+// isn't needed; window.storage is provided automatically there.
+//
+// 1. Create a free project at https://console.firebase.google.com
+// 2. Build > Firestore Database > Create database (any region, "production mode" is fine)
+// 3. Build > Authentication > Get started > Sign-in method > enable "Anonymous"
+// 4. Project settings (gear icon) > General > "Your apps" > click </> to add a Web app
+//    > copy the firebaseConfig object it shows you and paste it below
+// 5. Firestore Database > Rules tab, replace the rules with:
+//
+//      rules_version = '2';
+//      service cloud.firestore {
+//        match /databases/{database}/documents {
+//          match /kv/{document} {
+//            allow read, write: if request.auth != null;
+//          }
+//        }
+//      }
+//
+//    then click Publish. This lets anyone who opens your page read/write
+//    session data (needed for your table to share it), but blocks random
+//    bots that find your Firebase project without going through this page.
+// ============================================================
+const firebaseConfig = {
+  apiKey: "AIzaSyB0guwEPcp8tRdjIhRdc0zHHydeYeqeHXM",
+  authDomain: "initiativeapp-1.firebaseapp.com",
+  projectId: "initiativeapp-1",
+  storageBucket: "initiativeapp-1.firebasestorage.app",
+  messagingSenderId: "722277627871",
+  appId: "1:722277627871:web:5e936fcbfcdce6d136f66a"
+};
+
+async function initBackend(){
+  // Inside Claude.ai, window.storage already exists — leave it alone.
+  if(window.storage) return;
+
+  if(!firebaseConfig.apiKey || firebaseConfig.apiKey === 'YOUR_API_KEY'){
+    app.innerHTML = `<div class="card">
+      <div class="eyebrow">Setup needed</div>
+      <h2>Add your Firebase config</h2>
+      <p style="color:var(--text-muted);font-size:14px;line-height:1.6;">
+        This page is being hosted outside Claude, so it needs its own database.
+        Open this file, find the <code>firebaseConfig</code> object near the
+        bottom of the script, and paste in your own Firebase project's config.
+        See the setup comment right above it for step-by-step instructions.
+      </p>
+    </div>`;
+    throw new Error('firebase-not-configured');
+  }
+
+  firebase.initializeApp(firebaseConfig);
+  const db = firebase.firestore();
+  await firebase.auth().signInAnonymously();
+
+  const col = () => db.collection('kv');
+
+  window.storage = {
+    get: async (key) => {
+      const snap = await col().doc(key).get();
+      if(!snap.exists) return null;
+      const data = snap.data();
+      return { key, value: data.value, shared: true };
+    },
+    set: async (key, value) => {
+      await col().doc(key).set({ value, updated: Date.now() });
+      return { key, value, shared: true };
+    },
+    delete: async (key) => {
+      await col().doc(key).delete();
+      return { key, deleted: true, shared: true };
+    },
+    list: async (prefix) => {
+      const p = prefix || '';
+      const snap = await col()
+        .where(firebase.firestore.FieldPath.documentId(), '>=', p)
+        .where(firebase.firestore.FieldPath.documentId(), '<', p + '\uf8ff')
+        .get();
+      return { keys: snap.docs.map(d => d.id), prefix: p, shared: true };
+    }
+  };
+}
+
+initBackend()
+  .then(render)
+  .catch(err => {
+    if(err.message !== 'firebase-not-configured'){
+      app.innerHTML = `<div class="card"><div class="empty">Couldn't connect to the database. Check your Firebase config and rules, then reload.</div></div>`;
+      console.error(err);
+    }
+  });
 </script>
 </body>
 </html>
